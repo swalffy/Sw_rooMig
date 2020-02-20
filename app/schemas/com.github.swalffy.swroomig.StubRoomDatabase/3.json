@@ -1,0 +1,69 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 3,
+    "identityHash": "d18b796df5c22770a312be90df908de7",
+    "entities": [
+      {
+        "tableName": "stub_entity_annotationname",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`test` TEXT NOT NULL, PRIMARY KEY(`test`))",
+        "fields": [
+          {
+            "fieldPath": "test",
+            "columnName": "test",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "test"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_stub_entity_annotationname_test",
+            "unique": false,
+            "columnNames": [
+              "test"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_stub_entity_annotationname_test` ON `${TABLE_NAME}` (`test`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "AnotherOneEntity",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `test` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "test",
+            "columnName": "test",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'd18b796df5c22770a312be90df908de7')"
+    ]
+  }
+}

@@ -9,9 +9,10 @@ import com.github.swalffy.annotation.MyClass
 @Database(
     entities = [
         StubEntity::class,
-        StubTest::class
+        StubTest::class,
+        AnotherOneEntity::class
     ],
-    version = 4,
+    version = 6,
     exportSchema = true
 )
 @MyClass

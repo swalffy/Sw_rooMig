@@ -1,0 +1,78 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "f66bfe55f1bb476658e13e156fe43733",
+    "entities": [
+      {
+        "tableName": "sads",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`test` TEXT NOT NULL, PRIMARY KEY(`test`))",
+        "fields": [
+          {
+            "fieldPath": "test",
+            "columnName": "test",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "test"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_sads_test",
+            "unique": false,
+            "columnNames": [
+              "test"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_sads_test` ON `${TABLE_NAME}` (`test`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "StubTest",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `stub_name_test` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "test",
+            "columnName": "stub_name_test",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_StubTest_stub_name_test",
+            "unique": false,
+            "columnNames": [
+              "stub_name_test"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_StubTest_stub_name_test` ON `${TABLE_NAME}` (`stub_name_test`)"
+          }
+        ],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f66bfe55f1bb476658e13e156fe43733')"
+    ]
+  }
+}

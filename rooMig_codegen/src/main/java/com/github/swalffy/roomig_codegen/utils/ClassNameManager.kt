@@ -1,4 +1,4 @@
-package com.github.swalffy.roomig_codegen.model.codegen
+package com.github.swalffy.roomig_codegen.utils
 
 class ClassNameManager(
     val packageName: String,

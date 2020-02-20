@@ -6,5 +6,5 @@ data class SchemaRoot(
     @SerializedName("formatVersion")
     val formatVersion: Int,
     @SerializedName("database")
-    val database: Database
+    val database: DatabaseSchema
 )

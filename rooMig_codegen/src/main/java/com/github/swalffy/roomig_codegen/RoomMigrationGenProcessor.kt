@@ -1,9 +1,8 @@
 package com.github.swalffy.roomig_codegen
 
 import com.github.swalffy.annotation.MyClass
-import com.github.swalffy.roomig_codegen.model.codegen.ClassNameManager
-import com.github.swalffy.roomig_codegen.model.codegen.MigrationGenerator
-import com.github.swalffy.roomig_codegen.model.schema.Database
+import com.github.swalffy.roomig_codegen.utils.ClassNameManager
+import com.github.swalffy.roomig_codegen.model.schema.DatabaseSchema
 import com.github.swalffy.roomig_codegen.model.schema.SchemaRoot
 import com.google.auto.service.AutoService
 import com.google.gson.Gson
@@ -45,10 +44,11 @@ class RoomMigrationGenProcessor : AbstractProcessor() {
                     .notRepeated
 
                 val entityClass = it.asClassName()
-                val namingManager = ClassNameManager(
-                    packageName = entityClass.packageName,
-                    elementName = entityClass.simpleName
-                )
+                val namingManager =
+                    ClassNameManager(
+                        packageName = entityClass.packageName,
+                        elementName = entityClass.simpleName
+                    )
 
                 (0..(schemas.size - 2)).map { schemaIndex ->
                     MigrationGenerator(
@@ -62,7 +62,7 @@ class RoomMigrationGenProcessor : AbstractProcessor() {
         return true
     }
 
-    private fun readSchemas(elementName: String): List<Database> {
+    private fun readSchemas(elementName: String): List<DatabaseSchema> {
         val schemaFolderPath = processingEnv.options["room.schemaLocation"]
             ?: error("Please define room schema location in gradle config")
 
@@ -79,8 +79,8 @@ class RoomMigrationGenProcessor : AbstractProcessor() {
         }
     }
 
-    private val List<Database>.notRepeated: List<Database>
-        get() = mutableListOf<Database>().also { result ->
+    private val List<DatabaseSchema>.notRepeated: List<DatabaseSchema>
+        get() = mutableListOf<DatabaseSchema>().also { result ->
             (this.indices).forEach {
                 if (it == 0 || this[it - 1].identityHash != this[it].identityHash) {
                     result.add(this[it])

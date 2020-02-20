@@ -1,0 +1,110 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 4,
+    "identityHash": "645052e90f036ff25b13fa1e55d2dbdc",
+    "entities": [
+      {
+        "tableName": "sads",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`test` TEXT NOT NULL, PRIMARY KEY(`test`))",
+        "fields": [
+          {
+            "fieldPath": "test",
+            "columnName": "test",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "test"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_sads_test",
+            "unique": false,
+            "columnNames": [
+              "test"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_sads_test` ON `${TABLE_NAME}` (`test`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "StubTest",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `stub_name_test15` TEXT NOT NULL, `test2` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "test",
+            "columnName": "stub_name_test15",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "test2",
+            "columnName": "test2",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_StubTest_stub_name_test15",
+            "unique": false,
+            "columnNames": [
+              "stub_name_test15"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_StubTest_stub_name_test15` ON `${TABLE_NAME}` (`stub_name_test15`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "AnotherOneEntity",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `test` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "test",
+            "columnName": "test",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '645052e90f036ff25b13fa1e55d2dbdc')"
+    ]
+  }
+}

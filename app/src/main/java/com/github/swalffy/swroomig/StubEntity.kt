@@ -4,7 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "sads")
+@Entity(tableName = "stub_entity_annotationname")
 data class StubEntity(
 
     @PrimaryKey
