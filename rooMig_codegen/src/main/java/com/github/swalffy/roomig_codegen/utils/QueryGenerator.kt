@@ -27,4 +27,7 @@ object QueryGenerator {
     fun getCastColumnQuery(tableName: String, field: Field): String =
         "CAST (`${tableName}`.`${field.columnName}` AS ${field.type})"
 
+    fun getRemoveIndexQuery(indexName: String): String =
+        "DROP INDEX IF EXISTS $indexName"
+
 }

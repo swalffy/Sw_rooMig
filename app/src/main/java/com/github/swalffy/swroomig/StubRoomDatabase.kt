@@ -12,7 +12,7 @@ import com.github.swalffy.annotation.MyClass
         StubTest::class,
         AnotherOneEntity::class
     ],
-    version = 6,
+    version = 8,
     exportSchema = true
 )
 @MyClass

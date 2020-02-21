@@ -2,6 +2,7 @@ package com.github.swalffy.roomig_codegen.utils.diff
 
 import com.github.swalffy.roomig_codegen.model.diff.SchemaDiff
 import com.github.swalffy.roomig_codegen.model.schema.DatabaseSchema
+import com.google.gson.Gson
 
 class SchemaDiffCalculator(
     private val fromSchema: DatabaseSchema,
@@ -10,32 +11,33 @@ class SchemaDiffCalculator(
 
     fun calculate(): SchemaDiff? {
         val fromEntities = fromSchema.entities
-        val toEntites = toSchema.entities
+        val toEntities = toSchema.entities
 
-        val addedEntites = toEntites.filter { newEntity ->
+        val addedEntities = toEntities.filter { newEntity ->
             fromEntities.none { it.tableName == newEntity.tableName }
         }
 
-        val droppedEntites = fromEntities.filter { oldEntity ->
-            toEntites.none { it.tableName == oldEntity.tableName }
+        val droppedEntities = fromEntities.filter { oldEntity ->
+            toEntities.none { it.tableName == oldEntity.tableName }
         }
 
-        val changes = (fromEntities + toEntites).asSequence()
-            .filter { addedEntites.none { added -> it.tableName == added.tableName } }
-            .filter { droppedEntites.none { removed -> it.tableName == removed.tableName } }
+        val changes = (fromEntities + toEntities).asSequence()
+            .filter { addedEntities.none { added -> it.tableName == added.tableName } }
+            .filter { droppedEntities.none { removed -> it.tableName == removed.tableName } }
             .groupBy { it.tableName }
-            .mapNotNull { (key, value) ->
+            .filter { it.value.size == 2 }
+            .mapNotNull { (_, value) ->
                 EntityDiffCalculator(
                     value.first(),
                     value.last()
                 ).calculate()
             }
 
-        return takeIf { addedEntites.isNotEmpty() || droppedEntites.isNotEmpty() || changes.isNotEmpty() }
+        return takeIf { addedEntities.isNotEmpty() || droppedEntities.isNotEmpty() || changes.isNotEmpty() }
             ?.let {
                 SchemaDiff(
-                    added = addedEntites,
-                    dropped = droppedEntites,
+                    added = addedEntities,
+                    dropped = droppedEntities,
                     changed = changes
                 )
             }

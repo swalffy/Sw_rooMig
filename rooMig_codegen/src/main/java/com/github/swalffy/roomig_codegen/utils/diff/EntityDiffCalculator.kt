@@ -1,8 +1,10 @@
 package com.github.swalffy.roomig_codegen.utils.diff
 
 import com.github.swalffy.roomig_codegen.model.diff.EntityDiff
+import com.github.swalffy.roomig_codegen.model.diff.IndexDiff
 import com.github.swalffy.roomig_codegen.model.schema.Entity
 import com.github.swalffy.roomig_codegen.model.schema.Field
+import com.github.swalffy.roomig_codegen.model.schema.Index
 
 class EntityDiffCalculator(
     private val fromEntity: Entity,
@@ -25,7 +27,7 @@ class EntityDiffCalculator(
             .filter { addedFields.none { added -> it.columnName == added.columnName } }
             .filter { droppedFields.none { removed -> it.columnName == removed.columnName } }
             .groupBy { it.columnName }
-            .mapNotNull { (key, value) ->
+            .mapNotNull { (_, value) ->
                 FieldDiffCalculator(
                     value.first(),
                     value.last()
@@ -41,13 +43,21 @@ class EntityDiffCalculator(
                     changedFields.none(predicate)
         }
 
-        return takeIf { addedFields.isNotEmpty() || droppedFields.isNotEmpty() || changed.isNotEmpty()}?.let {
+        val indexChanges = IndexDiffCalculator(fromEntity.indices, toEntity.indices).calculate()
+        val primaryKeyChanges = PrimaryKeyDiffCalculator(fromEntity.primaryKey, toEntity.primaryKey).calculate()
+
+        val columnWasChanged = arrayOf(addedFields, droppedFields, changed)
+            .any { it.isNotEmpty() }
+
+        return takeIf { columnWasChanged || indexChanges != null || primaryKeyChanges != null }?.let {
             EntityDiff(
                 entity = toEntity,
-                notChanged = notChangedFields,
+                columnNotChanged = notChangedFields,
                 columnAdded = addedFields,
                 columnDropped = droppedFields,
-                columnChanged = changed
+                columnChanged = changed,
+                indicesDiff = indexChanges,
+                primaryKeyDiff = primaryKeyChanges
             )
         }
     }

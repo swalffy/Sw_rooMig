@@ -62,13 +62,14 @@ class MigrationGenerator(
             }
 
             changed.forEach { diff ->
-                if (diff.isOnlyAddColumn) {
+                if (diff.onlyAddingColumns) {
                     migrateFunctionBuilder.addComment(
                         ">> Adding columns to ${diff.entity.tableName} - ${diff.columnAdded.joinToString(
                             prefix = "[",
                             postfix = "]"
                         ) { it.columnName }}"
                     )
+
                     diff.columnAdded.forEach {
                         val sql = QueryGenerator.getAddColumnQuery(
                             tableName = diff.entity.tableName,
@@ -114,6 +115,26 @@ class MigrationGenerator(
                         )
                     }
                 }
+
+                diff.indicesDiff?.run {
+                    migrateFunctionBuilder.run {
+                        addComment(">> Indices migration:")
+                        addComment("> remove ${removed.joinToString(prefix = "[", postfix = "]")}")
+                        addComment("> add ${added.joinToString(prefix = "[", postfix = "]") { it.name }}")
+                    }
+
+                    removed.forEach {
+                        execSql(QueryGenerator.getRemoveIndexQuery(it))
+                    }
+                    added.forEach { index ->
+                        execSql(
+                            QueryGenerator.getCreateIndexQuery(
+                                index = index,
+                                tableName = diff.entity.tableName
+                            )
+                        )
+                    }
+                }
             }
         }
 
@@ -122,11 +143,11 @@ class MigrationGenerator(
     }
 
     private fun getFieldsMap(diff: EntityDiff): LinkedHashMap<String, String> {
-        // new column - old column
+        // new column name - old column name
         val fields = linkedMapOf<String, String>()
         val entity = diff.entity
 
-        diff.notChanged.forEach {
+        diff.columnNotChanged.forEach {
             fields[it.columnName] = "`${entity.tableName}`.`${it.columnName}`"
         }
         diff.columnAdded.forEach {

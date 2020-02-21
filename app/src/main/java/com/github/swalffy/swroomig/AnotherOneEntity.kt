@@ -1,12 +1,15 @@
 package com.github.swalffy.swroomig
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.PrimaryKey
 
-@Entity
+@Entity(
+    primaryKeys = ["id", "addedEntity" ]
+)
 data class AnotherOneEntity(
-    @PrimaryKey
     val id: Int,
+    @ColumnInfo(index = true)
     val test: String?,
+    @ColumnInfo(index = true)
     val addedEntity: Float
 )
