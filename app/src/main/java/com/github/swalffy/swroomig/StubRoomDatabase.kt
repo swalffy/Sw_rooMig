@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.github.swalffy.annotation.MyClass
+import com.github.swalffy.annotation.GenerateMigrations
 
 @Database(
     entities = [
@@ -12,10 +12,10 @@ import com.github.swalffy.annotation.MyClass
         StubTest::class,
         AnotherOneEntity::class
     ],
-    version = 8,
+    version = 10,
     exportSchema = true
 )
-@MyClass
+@GenerateMigrations
 abstract class StubRoomDatabase : RoomDatabase() {
 
     abstract val stubEntity: RoomStubDao
@@ -26,6 +26,9 @@ abstract class StubRoomDatabase : RoomDatabase() {
             context,
             StubRoomDatabase::class.java,
             "stub_db"
-        ).build()
+        ).addMigrations(*MigrationHolder.build())
+            .allowMainThreadQueries()
+            .fallbackToDestructiveMigrationOnDowngrade()
+            .build()
     }
 }

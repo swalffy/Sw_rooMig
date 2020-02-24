@@ -14,7 +14,7 @@ class MigrationGenerator(
     fromSchema: DatabaseSchema,
     toSchema: DatabaseSchema
 ) {
-    private val className = ClassName(
+    val className = ClassName(
         namingManager.packageName,
         namingManager.generateMigrationName(fromSchema.version, toSchema.version)
     )
@@ -28,8 +28,8 @@ class MigrationGenerator(
 
     init {
         SchemaDiffCalculator(
-            fromSchema = fromSchema,
-            toSchema = toSchema
+            fromEntities = fromSchema.entities,
+            toEntities = toSchema.entities
         ).calculate()?.run {
             if (this.dropped.isNotEmpty()) {
                 migrateFunctionBuilder.addComment(
@@ -120,7 +120,12 @@ class MigrationGenerator(
                     migrateFunctionBuilder.run {
                         addComment(">> Indices migration:")
                         addComment("> remove ${removed.joinToString(prefix = "[", postfix = "]")}")
-                        addComment("> add ${added.joinToString(prefix = "[", postfix = "]") { it.name }}")
+                        addComment(
+                            "> add ${added.joinToString(
+                                prefix = "[",
+                                postfix = "]"
+                            ) { it.name }}"
+                        )
                     }
 
                     removed.forEach {
@@ -142,26 +147,26 @@ class MigrationGenerator(
         fileBuilder.addType(classBuilder.build())
     }
 
-    private fun getFieldsMap(diff: EntityDiff): LinkedHashMap<String, String> {
+    private fun getFieldsMap(difference: EntityDiff): LinkedHashMap<String, String> {
         // new column name - old column name
         val fields = linkedMapOf<String, String>()
-        val entity = diff.entity
+        val newEntity = difference.entity
 
-        diff.columnNotChanged.forEach {
-            fields[it.columnName] = "`${entity.tableName}`.`${it.columnName}`"
+        difference.columnNotChanged.forEach { diff ->
+            fields[diff.columnName] = "`${newEntity.tableName}`.`${diff.columnName}`"
         }
-        diff.columnAdded.forEach {
-            fields[it.columnName] = it.definition
+        difference.columnAdded.forEach { diff ->
+            fields[diff.columnName] = diff.defaultValue
         }
-        diff.columnChanged.forEach {
-            fields[it.field.columnName] =
-                QueryGenerator.getCastColumnQuery(entity.tableName, it.field)
+        difference.columnChanged.forEach { diff ->
+            fields[diff.field.columnName] =
+                QueryGenerator.getCastColumnQuery(newEntity.tableName, diff.field)
         }
 
         return fields
     }
 
-    fun generateTo(destination: File) {
+    fun writeTo(destination: File) = apply {
         fileBuilder.build().writeTo(destination)
     }
 

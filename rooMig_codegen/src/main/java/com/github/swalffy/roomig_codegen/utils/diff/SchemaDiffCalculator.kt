@@ -1,18 +1,14 @@
 package com.github.swalffy.roomig_codegen.utils.diff
 
 import com.github.swalffy.roomig_codegen.model.diff.SchemaDiff
-import com.github.swalffy.roomig_codegen.model.schema.DatabaseSchema
-import com.google.gson.Gson
+import com.github.swalffy.roomig_codegen.model.schema.Entity
 
 class SchemaDiffCalculator(
-    private val fromSchema: DatabaseSchema,
-    private val toSchema: DatabaseSchema
+    private val fromEntities: List<Entity>,
+    private val toEntities: List<Entity>
 ) {
 
     fun calculate(): SchemaDiff? {
-        val fromEntities = fromSchema.entities
-        val toEntities = toSchema.entities
-
         val addedEntities = toEntities.filter { newEntity ->
             fromEntities.none { it.tableName == newEntity.tableName }
         }
@@ -21,7 +17,7 @@ class SchemaDiffCalculator(
             toEntities.none { it.tableName == oldEntity.tableName }
         }
 
-        val changes = (fromEntities + toEntities).asSequence()
+        val changedEntities = (fromEntities + toEntities).asSequence()
             .filter { addedEntities.none { added -> it.tableName == added.tableName } }
             .filter { droppedEntities.none { removed -> it.tableName == removed.tableName } }
             .groupBy { it.tableName }
@@ -33,12 +29,12 @@ class SchemaDiffCalculator(
                 ).calculate()
             }
 
-        return takeIf { addedEntities.isNotEmpty() || droppedEntities.isNotEmpty() || changes.isNotEmpty() }
+        return takeIf { addedEntities.isNotEmpty() || droppedEntities.isNotEmpty() || changedEntities.isNotEmpty() }
             ?.let {
                 SchemaDiff(
                     added = addedEntities,
                     dropped = droppedEntities,
-                    changed = changes
+                    changed = changedEntities
                 )
             }
     }

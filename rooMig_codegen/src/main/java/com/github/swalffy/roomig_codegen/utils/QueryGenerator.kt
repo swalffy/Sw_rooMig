@@ -22,7 +22,7 @@ object QueryGenerator {
         "ALTER TABLE `$fromName` RENAME TO `${toName}`"
 
     fun getAddColumnQuery(tableName: String, field: Field): String =
-        "ALTER TABLE `${tableName}` ADD ${field.definition}"
+        "ALTER TABLE `${tableName}` ADD ${field.definition} DEFAULT ${field.defaultValue}"
 
     fun getCastColumnQuery(tableName: String, field: Field): String =
         "CAST (`${tableName}`.`${field.columnName}` AS ${field.type})"

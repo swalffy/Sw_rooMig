@@ -19,4 +19,15 @@ data class Field(
 
             return "`$columnName` $type $nullCondition"
         }
+
+    val defaultValue: String
+        get() = if (notNull) {
+            when (type) {
+                "INTEGER" -> 0
+                "REAL" -> 0.0
+                else -> "''"
+            }
+        } else {
+            "NULL"
+        }.toString()
 }
